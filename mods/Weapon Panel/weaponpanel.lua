@@ -107,7 +107,7 @@ weapon_panel.update_panel = function()
 	
 	local stat_text = info_panel:child("stat_text")
 	stat_text:set_text(
-		(base:fire_mode() == "single" and "a" or "A") .. (base:got_silencer() and "S" or "s") .. (base:is_bipod_usable() and (base:is_deployed() and "B" or "b") or "")
+		(base:fire_mode() == "single" and "a" or "A") .. (base:got_silencer() and "S" or "s")
 	)
 end
 
