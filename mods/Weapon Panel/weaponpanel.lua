@@ -76,7 +76,6 @@ weapon_panel.create_panel = function()
 		alpha = 0.25,
 		layer = 9,
 	}):set_shape(prev_text:shape())
-	new_text("stat")
 	info_panel:set_h(prev_text:bottom())
 end
 
@@ -104,11 +103,6 @@ weapon_panel.update_panel = function()
 	clip_text_bg:set_w(info_panel:w() * percent) clip_text_bg2:set_x(info_panel:w() * percent)
 	local percent = cur_ammo / max_ammo
 	ammo_text_bg:set_w(info_panel:w() * percent) ammo_text_bg2:set_x(info_panel:w() * percent)
-	
-	local stat_text = info_panel:child("stat_text")
-	stat_text:set_text(
-		(base:fire_mode() == "single" and "a" or "A") .. (base:got_silencer() and "S" or "s")
-	)
 end
 
 if RequiredScript == "lib/managers/hudmanagerpd2" then
