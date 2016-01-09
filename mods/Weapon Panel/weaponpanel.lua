@@ -34,7 +34,7 @@ weapon_panel.create_panel = function()
 	weapon_panel.info_panel_visibled = 0
 	local info_panel = weapon_panel.ws_panel:panel({name = "info_panel", w = 75, alpha = 1, layer = 30})
 	local prev_text = {left = function(self) return 0 end, bottom = function(self) return 0 end}
-	local new_text = function(name)
+	local function new_text(name)
 		local text = info_panel:text({
 			name = name .. "_text",
 			text = "DUMMY",
@@ -60,22 +60,18 @@ weapon_panel.create_panel = function()
 		prev_text = text
 		return text
 	end
-	new_text("clip")
-	info_panel:rect({
-		name = "clip_text_bg2",
-		blend_mode = "normal",
-		color = Color(1, 0, 0),
-		alpha = 0.25,
-		layer = 9,
-	}):set_shape(prev_text:shape())
-	new_text("ammo")
-	info_panel:rect({
-		name = "ammo_text_bg2",
-		blend_mode = "normal",
-		color = Color(1, 0, 0),
-		alpha = 0.25,
-		layer = 9,
-	}):set_shape(prev_text:shape())
+	local function new_progtext(name)
+		new_text(name)
+		info_panel:rect({
+			name = name .. "_text_bg2",
+			blend_mode = "normal",
+			color = Color(1, 0, 0),
+			alpha = 0.25,
+			layer = 9,
+		}):set_shape(prev_text:shape())
+	end
+	new_progtext("clip")
+	new_progtext("ammo")
 	info_panel:set_h(prev_text:bottom())
 end
 
