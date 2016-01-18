@@ -14,103 +14,60 @@ end)
 
 Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_manager, nodes)
 
-	MenuCallbackHandler.WeaponPanelOptions_weapon = function(self, item)
-		local name = item:parameters().name
-		local menu_id = name .. "_menu"
-		local _, _, id = name:find("^WeaponPanelOptions_weapon_(.+)$")
-		if id then
-			MenuHelper:NewMenu(menu_id)
-			menu.logic._data._nodes[menu_id] = MenuHelper:BuildMenu(menu_id, {area_bg = "half"})
-			
-		end
+	MenuCallbackHandler.default_offset_x = function(self, item)
+		WeaponPanel.options.base.offset.x = item:value()
+		WeaponPanel:save_options()
 	end
-	MenuCallbackHandler.WeaponPanelOptions_alpha = function(self, item)
-		local alpha = item:value()
-		local name = item:parameters().name
-		local _, _, id = name:find("^WeaponPanelOptions_(.+)_alpha$")
-		if id then
-			WeaponPanel.options.data[id].alpha = alpha
-			WeaponPanel:save_options()
-			
-			if managers.player and obj.ws_panel then
-				local info_panel = obj.ws_panel:child("info_panel")
-				info_panel:child("clip_text_bg"):set_alpha(alpha)
-				info_panel:child("clip_text_bg2"):set_alpha(alpha)
-				info_panel:child("ammo_text_bg"):set_alpha(alpha)
-				info_panel:child("ammo_text_bg2"):set_alpha(alpha)
-			end
-		end
+	MenuCallbackHandler.default_offset_y = function(self, item)
+		WeaponPanel.options.base.offset.y = item:value()
+		WeaponPanel:save_options()
 	end
-	MenuCallbackHandler.WeaponPanelOptions_offset = function(self, item)
-		local val = item:value()
-		local name = item:parameters().name
-		local _, _, id, axis = name:find("^WeaponPanelOptions_(.+)_offset_(.)$")
-		if id and axis then
-			WeaponPanel.options.data[id].offset[axis] = val
-			WeaponPanel:save_options()
-			
-			if managers.player:local_player() then
-				WeaponPanel:update(managers.player:local_player():camera():camera_unit():base())
-			end
-		end
+	MenuCallbackHandler.default_offset_z = function(self, item)
+		WeaponPanel.options.base.offset.z = item:value()
+		WeaponPanel:save_options()
 	end
 	
-	local function AddWeaponOption(id)
-		MenuHelper:AddButton({
-			id = WeaponPanelOptions_weapon_" .. id,
-			title = id,
-			desc = id,
-			callback = "WeaponPanelOptions_weapon,
-		})
-		MenuHelper:AddSlider({
-			id = "WeaponPanelOptions_" .. id .. "_alpha",
-			title = "Panel opacity",
-			desc = "Panel opacity(%). Default: " .. (WeaponPanel.options.default[id].alpha * 100),
-			callback = "WeaponPanelOptions_alpha",
-			menu_id = WeaponPanel.options_menu,
-			value = WeaponPanel.options.data[id].alpha,
-			show_value = false,
-			min = 0,
-			max = 1,
-			step = 0.05,
-			localized = false,
-			priority = 10,
-		})
-		
-		for _, v in ipairs({
-			[1] = {
-				axis = "x",
-				title = "Horizontal offset",
-				priority = 9,
-			},
-			[2] = {
-				axis = "y",
-				title = "Depth offset",
-				priority = 8,
-			},
-			[3] = {
-				axis = "z",
-				title = "Vertical offset",
-				priority = 7,
-			},
-		}) do
-			MenuHelper:AddSlider({
-				id = "WeaponPanelOptions_" .. id .. "_offset_" .. v.axis,
-				title = v.title,
-				desc = v.title .. "(cm). Default: " .. WeaponPanel.options.default[id].offset[v.axis],
-				callback = "WeaponPanelOptions_offset",
-				menu_id = WeaponPanel.options_menu,
-				value = WeaponPanel.options.data[id].offset[v.axis],
-				show_value = true,
-				min = -30,
-				max = 30,
-				step = 1,
-				localized = false,
-				priority = v.priority,
-			})
-		end
-	end
-	AddWeaponOption("base")
+	MenuHelper:AddSlider({
+		id = "WeaponPanelOptions_default_offset_x",
+		title = "Horizontal offset",
+		desc = "Horizontal offset(cm). Default: " .. WeaponPanel.default_options.base.offset.x,
+		callback = "default_offset_x",
+		menu_id = WeaponPanel.options_menu,
+		value = WeaponPanel.options.base.offset.x,
+		show_value = true,
+		min = -30,
+		max = 30,
+		step = 1,
+		localized = false,
+	})
+	MenuHelper:AddSlider({
+		id = "WeaponPanelOptions_default_offset_y",
+		title = "Depth offset",
+		desc = "Depth offset(cm). Default: " .. WeaponPanel.default_options.base.offset.y,
+		callback = "default_offset_y",
+		menu_id = WeaponPanel.options_menu,
+		value = WeaponPanel.options.base.offset.y,
+		show_value = true,
+		min = -30,
+		max = 30,
+		step = 1,
+		localized = false,
+	})
+	MenuHelper:AddSlider({
+		id = "WeaponPanelOptions_default_offset_z",
+		title = "Vertical offset",
+		desc = "Vertical offset(cm). Default: " .. WeaponPanel.default_options.base.offset.z,
+		callback = "default_offset_z",
+		disabled_color = Color.black,
+		menu_id = WeaponPanel.options_menu,
+		value = WeaponPanel.options.base.offset.z,
+		show_value = true,
+		min = -30,
+		max = 30,
+		step = 1,
+		localized = false,
+	})
+
 end)
 
 Hooks:Add("MenuManagerBuildCustomMenus", "WeaponPanelOptions", function(menu_manager, nodes)
