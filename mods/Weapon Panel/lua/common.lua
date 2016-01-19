@@ -131,7 +131,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 			return
 		end
 		local equipped_unit = fpcp_base._parent_unit:inventory():equipped_unit()
-		local obj = equipped_unit:get_object(Idstring("fire")) or WeaponPanel.equipped_unit:get_object(Idstring("a_sight")) or fpcp_base._unit:get_object(Idstring("a_weapon_right"))
+		local obj = equipped_unit:get_object(Idstring("fire")) or equipped_unit:get_object(Idstring("a_sight")) or fpcp_base._unit:get_object(Idstring("a_weapon_right"))
 		if not obj then
 			return
 		end
