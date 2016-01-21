@@ -32,8 +32,8 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 			WeaponPanel.options.data[id].alpha = alpha
 			WeaponPanel:save_options()
 			
-			if managers.player and obj.ws_panel then
-				local info_panel = obj.ws_panel:child("info_panel")
+			if managers.player and WeaponPanel.ws_panel then
+				local info_panel = WeaponPanel.ws_panel:child("info_panel")
 				info_panel:child("clip_text_bg"):set_alpha(alpha)
 				info_panel:child("clip_text_bg2"):set_alpha(alpha)
 				info_panel:child("ammo_text_bg"):set_alpha(alpha)
