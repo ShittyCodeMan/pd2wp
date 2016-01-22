@@ -26,7 +26,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 	function obj:ErrorHandler()
 		if LuaModManager:IsModEnabled(self.mod_dir) then
 			log("Disabling " .. self.mod_dir)
-			--LuaModManager:DisableMod(self.mod_dir)
+			LuaModManager:DisableMod(self.mod_dir)
 			
 			log("Unloading " .. self.mod_dir)
 			Hooks:RemovePostHook("WeaponPanel")
