@@ -24,6 +24,19 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 			
 		end
 	end
+	MenuCallbackHandler.WeaponPanelOptions_realammo = function(self, item)
+		local name = item:parameters().name
+		local menu_id = name .. "_menu"
+		local _, _, id = name:find("^WeaponPanelOptions_(.+)_realammo$")
+		if id then
+			WeaponPanel.options.data[id].realammo = (item:value() == "on" and true or false)
+			WeaponPanel:save_options()
+			
+			if WeaponPanel.ws_panel then
+				WeaponPanel:update_panel_info()
+			end
+		end
+	end
 	MenuCallbackHandler.WeaponPanelOptions_alpha = function(self, item)
 		local alpha = item:value()
 		local name = item:parameters().name
@@ -32,7 +45,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 			WeaponPanel.options.data[id].alpha = alpha
 			WeaponPanel:save_options()
 			
-			if managers.player and WeaponPanel.ws_panel then
+			if WeaponPanel.ws_panel then
 				local info_panel = WeaponPanel.ws_panel:child("info_panel")
 				info_panel:child("clip_text_bg"):set_alpha(alpha)
 				info_panel:child("clip_text_bg2"):set_alpha(alpha)
@@ -49,16 +62,27 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 			WeaponPanel.options.data[id].offset[axis] = val
 			WeaponPanel:save_options()
 			
-			if managers.player:local_player() then
+			if WeaponPanel.ws_panel and managers.player:local_player() then
 				WeaponPanel:update(managers.player:local_player():camera():camera_unit():base())
 			end
 		end
 	end
 	
+	MenuHelper:AddToggle({
+		id = "WeaponPanelOptions_base_realammo",
+		title = "Real ammo",
+		desc = "Real ammo. Default: " .. tostring(WeaponPanel.options.default.base.realammo),
+		callback = "WeaponPanelOptions_realammo",
+		menu_id = WeaponPanel.options_menu,
+		value = WeaponPanel.options.data.base.realammo,
+		localized = false,
+		priority = 11,
+	})
+	
 	MenuHelper:AddSlider({
 		id = "WeaponPanelOptions_base_alpha",
 		title = "Panel opacity",
-		desc = "Panel opacity(%). Default: " .. (WeaponPanel.options.default.base.alpha * 100),
+		desc = "Panel opacity(%). Default: " .. tostring(WeaponPanel.options.default.base.alpha * 100),
 		callback = "WeaponPanelOptions_alpha",
 		menu_id = WeaponPanel.options_menu,
 		value = WeaponPanel.options.data.base.alpha,
@@ -90,7 +114,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		MenuHelper:AddSlider({
 			id = "WeaponPanelOptions_base_offset_" .. v.axis,
 			title = v.title,
-			desc = v.title .. "(cm). Default: " .. WeaponPanel.options.default.base.offset[v.axis],
+			desc = v.title .. "(cm). Default: " .. tostring(WeaponPanel.options.default.base.offset[v.axis]),
 			callback = "WeaponPanelOptions_offset",
 			menu_id = WeaponPanel.options_menu,
 			value = WeaponPanel.options.data.base.offset[v.axis],
@@ -114,7 +138,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		MenuHelper:AddSlider({
 			id = "WeaponPanelOptions_" .. id .. "_alpha",
 			title = "Panel opacity",
-			desc = "Panel opacity(%). Default: " .. (WeaponPanel.options.default[id].alpha * 100),
+			desc = "Panel opacity(%). Default: " .. tostring(WeaponPanel.options.default[id].alpha * 100),
 			callback = "WeaponPanelOptions_alpha",
 			menu_id = WeaponPanel.options_menu,
 			value = WeaponPanel.options.data[id].alpha,
@@ -146,7 +170,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 			MenuHelper:AddSlider({
 				id = "WeaponPanelOptions_" .. id .. "_offset_" .. v.axis,
 				title = v.title,
-				desc = v.title .. "(cm). Default: " .. WeaponPanel.options.default[id].offset[v.axis],
+				desc = v.title .. "(cm). Default: " .. tostring(WeaponPanel.options.default[id].offset[v.axis]),
 				callback = "WeaponPanelOptions_offset",
 				menu_id = WeaponPanel.options_menu,
 				value = WeaponPanel.options.data[id].offset[v.axis],

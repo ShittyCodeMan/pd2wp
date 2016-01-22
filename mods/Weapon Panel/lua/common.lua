@@ -11,6 +11,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		options = {
 			default = {
 				base = {
+					realammo = false,
 					alpha = 0.5,
 					offset = {
 						x = -3,
@@ -25,7 +26,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 	function obj:ErrorHandler()
 		if LuaModManager:IsModEnabled(self.mod_dir) then
 			log("Disabling " .. self.mod_dir)
-			LuaModManager:DisableMod(self.mod_dir)
+			--LuaModManager:DisableMod(self.mod_dir)
 			
 			log("Unloading " .. self.mod_dir)
 			Hooks:RemovePostHook("WeaponPanel")
@@ -78,7 +79,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 				name = name .. "_text_bg",
 				blend_mode = "normal",
 				color = Color(0, 0, 1),
-				alpha = WeaponPanel.options.data.base.alpha,
+				alpha = self.options.data.base.alpha,
 				layer = 9,
 			}):set_shape(text:shape())
 			prev_text = text
@@ -90,7 +91,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 				name = name .. "_text_bg2",
 				blend_mode = "normal",
 				color = Color(1, 0, 0),
-				alpha = WeaponPanel.options.data.base.alpha,
+				alpha = self.options.data.base.alpha,
 				layer = 9,
 			}):set_shape(prev_text:shape())
 		end
@@ -116,7 +117,11 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 			return
 		end
 		local base = weapon:base()
-		local max_clip, cur_clip, cur_ammo, max_ammo =  base:get_ammo_max_per_clip(), base:get_ammo_remaining_in_clip(), base:get_ammo_total(), base:get_ammo_max()
+		local max_clip, cur_clip, cur_ammo, max_ammo = base:get_ammo_max_per_clip(), base:get_ammo_remaining_in_clip(), base:get_ammo_total(), base:get_ammo_max()
+		if self.options.data.base.realammo then
+			cur_ammo = math.max(0, cur_ammo - cur_clip)
+			max_ammo = math.max(0, max_ammo - max_clip)
+		end
 		clip_text:set_text(string.format("%03d / %03d", cur_clip, max_clip))
 		ammo_text:set_text(string.format("%03d / %03d", cur_ammo, max_ammo))
 		local percent = cur_clip / max_clip
@@ -138,7 +143,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		local vec = obj:position()
 		local rot = obj:rotation()
 		local temp = Vector3()
-		local offset = WeaponPanel.options.data.base.offset
+		local offset = self.options.data.base.offset
 		mvector3.set(temp, rot:x())
 		mvector3.multiply(temp, offset.x)
 		mvector3.add(vec, temp)
@@ -148,12 +153,14 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		mvector3.set(temp, rot:z())
 		mvector3.multiply(temp, offset.z)
 		mvector3.add(vec, temp)
-		local pos = WeaponPanel.ws:world_to_screen(cam, vec)
+		mvector3.direction(temp, cam:position(), vec)
+		local in_fov = mvector3.angle(cam:rotation():y(), temp) < 90 and 1 or 0
+		local pos = self.ws:world_to_screen(cam, vec)
 		local in_steelsight = managers.player:player_unit():movement():current_state()._state_data.in_steelsight
 		local info_panel = self.ws_panel:child("info_panel")
 		info_panel:set_x(pos.x - (offset.x < 0 and info_panel:w() or 0))
 		info_panel:set_y(pos.y - (offset.z > 0 and info_panel:h() or 0))
-		info_panel:set_alpha(WeaponPanel.visibled * (in_steelsight and 0.75 or 1))
+		info_panel:set_alpha(self.visibled * in_fov * (in_steelsight and 0.75 or 1))
 	end
 	
 	function obj:save_options()
