@@ -4,10 +4,20 @@ SavePath = "mods/save/"
 LogsPath = "mods/logs/"
 ]]
 
+local function clbk_download_mod()
+	local mod = LuaModManager:GetMod(self.mod_dir)
+	local http_id = dohttpreq( WeaponPanel.download_url, LuaModUpdates.ModDownloadFinished, LuaModUpdates.UpdateDownloadDialog )
+	managers.menu:show_download_progress( mod.definition.name )
+	LuaModUpdates._currently_downloading[http_id] = mod.definition.updates[1].identifier
+end
+
 _G.WeaponPanel = _G.WeaponPanel or (function()
 	local obj = {
 		mod_dir = ModPath,
 		save_path = SavePath .. "weapon_panel.txt",
+		update_url = "https://raw.githubusercontent.com/hogepiyosan/pd2wp/master/mods/Weapon%20Panel/mod.txt",
+		-- SUPER NEKO
+		download_url = "https://github.com/hogepiyosan/pd2wp/archive/master.zip",
 		options = {
 			default = {
 				base = {
@@ -163,6 +173,44 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		info_panel:set_alpha(self.visibled * in_fov * (in_steelsight and 0.75 or 1))
 	end
 	
+	function obj:check_mod_update()
+		dohttpreq(self.update_url, function(data, id)
+			if data:is_nil_or_empty() then
+				log("update server down")
+				return
+			end
+			local server_modtxt = json.decode( data )
+			local mod = LuaModManager:GetMod(self.mod_dir)
+			-- if server_modtxt.updates[1].revision > mod.definition.revision then
+			if server_modtxt.version > mod.definition.version then
+				NotificationsManager:AddNotification(
+					mod.definition.name .. "_update",
+					mod.definition.name .. " update available!",
+					-- string.format("Current: %d\nLatest: %d", mod.definition.revision, server_modtxt.updates[1].revision),
+					string.format("Current: %d\nLatest: %d", mod.definition.version, server_modtxt.version),
+					0,
+					function()
+						QuickMenu:new(
+							"Mod update", "Download and install this mod?",
+							{
+								[1] = {
+									text = "Sure",
+									callback = clbk_download_mod,
+								},
+								[2] = {
+									text = "Hell NO",
+									is_cancel_button = true,
+								}
+							},
+							true)
+					end)
+			end
+		end)
+	end
+	function obj:download_mod()
+		
+	end
+	
 	function obj:save_options()
 		local file = io.open( self.save_path, "w" )
 		if file then
@@ -186,20 +234,22 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		self:complement_options()
 	end
 	function obj:complement_options()
-		local function f(dst, src)
-			if type(src) == "table" then
+		local function f( dst, src )
+			if type( src ) == "table" then
 				dst = dst or {}
-				for k, v in pairs(src) do
-					dst[k] = f(dst[k], v)
+				for k, v in pairs( src ) do
+					dst[k] = f( dst[k], v )
 				end
 			else
 				dst = dst or src
 			end
 			return dst
 		end
-		self.options.data = f(self.options.data, self.options.default)
+		self.options.data = f( self.options.data, self.options.default )
 	end
 	obj:load_options()
+	-- not yet
+	--obj:check_mod_update()
 
 	return obj
 end)()
