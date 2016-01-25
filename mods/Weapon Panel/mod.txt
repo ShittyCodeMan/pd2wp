@@ -3,7 +3,13 @@
 	"description" : "Attach a weapon panel",
 	"author" : "hogepiyo",
 	"contact" : "none",
-	"version" : "6",
+	"version" : "7",
+	"updates" : [
+		{
+			"revision" : 7,
+			"identifier" : "weapon_panel",
+		}
+	],
 	"hooks" : [
 		{
 			"hook_id" : "lib/managers/hudmanagerpd2",

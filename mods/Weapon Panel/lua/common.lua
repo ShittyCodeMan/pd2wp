@@ -130,7 +130,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		local max_clip, cur_clip, cur_ammo, max_ammo = base:get_ammo_max_per_clip(), base:get_ammo_remaining_in_clip(), base:get_ammo_total(), base:get_ammo_max()
 		if self.options.data.base.realammo then
 			cur_ammo = math.max(0, cur_ammo - cur_clip)
-			max_ammo = math.max(0, max_ammo - max_clip)
+			max_ammo = math.max(0, max_ammo - max_clip) + (max_clip - cur_clip)
 		end
 		clip_text:set_text(string.format("%03d / %03d", cur_clip, max_clip))
 		ammo_text:set_text(string.format("%03d / %03d", cur_ammo, max_ammo))
