@@ -134,9 +134,9 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		end
 		clip_text:set_text(string.format("%03d / %03d", cur_clip, max_clip))
 		ammo_text:set_text(string.format("%03d / %03d", cur_ammo, max_ammo))
-		local percent = cur_clip / max_clip
+		local percent = max_clip and (cur_clip / max_clip) or 0
 		clip_text_bg:set_w(info_panel:w() * percent) clip_text_bg2:set_x(info_panel:w() * percent)
-		local percent = cur_ammo / max_ammo
+		local percent = max_ammo and (cur_ammo / max_ammo) or 0
 		ammo_text_bg:set_w(info_panel:w() * percent) ammo_text_bg2:set_x(info_panel:w() * percent)
 	end
 	
