@@ -6,7 +6,9 @@ Hooks:PostHook( HUDManager, "show_endscreen_hud", "WeaponPanel", function(self)
 	if not LuaModManager:IsModEnabled(mod_path) then return end
 	local s, r = pcall(function()
 	
-	WeaponPanel.visibled = 0
+	if WeaponPanel.ws_panel then
+		WeaponPanel.ws_panel:child("info_panel"):hide()
+	end
 	
 	end)
 	if s then return r else WeaponPanel:ErrorHandler() return end
@@ -38,7 +40,9 @@ Hooks:PostHook( FPCameraPlayerBase, "hide_weapon", "WeaponPanel", function(self)
 	if not LuaModManager:IsModEnabled(mod_path) then return end
 	local s, r = pcall(function()
 	
-	WeaponPanel.visibled = 0
+	if WeaponPanel.ws_panel then
+		WeaponPanel.ws_panel:child("info_panel"):hide()
+	end
 	
 	end)
 	if s then return r else WeaponPanel:ErrorHandler() return end
@@ -48,7 +52,9 @@ Hooks:PostHook( FPCameraPlayerBase, "show_weapon", "WeaponPanel", function(self)
 	if not LuaModManager:IsModEnabled(mod_path) then return end
 	local s, r = pcall(function()
 	
-	WeaponPanel.visibled = 1
+	if WeaponPanel.ws_panel then
+		WeaponPanel.ws_panel:child("info_panel"):show()
+	end
 	
 	end)
 	if s then return r else WeaponPanel:ErrorHandler() return end

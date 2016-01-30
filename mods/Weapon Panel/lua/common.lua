@@ -4,6 +4,11 @@ SavePath = "mods/save/"
 LogsPath = "mods/logs/"
 ]]
 
+--[[
+TODO:
+Show panel after leave vehicle
+]]
+
 local function clbk_download_mod()
 	local mod = LuaModManager:GetMod(self.mod_dir)
 	local http_id = dohttpreq( WeaponPanel.download_url, LuaModUpdates.ModDownloadFinished, LuaModUpdates.UpdateDownloadDialog )
@@ -66,8 +71,8 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 	function obj:create_panel()
 		self.ws = managers.gui_data:create_fullscreen_workspace()
 		self.ws_panel = self.ws:panel()
-		self.visibled = 0
 		local info_panel = self.ws_panel:panel({name = "info_panel", w = 75, alpha = 1, layer = 30})
+		info_panel:hide()
 		local prev_text = {left = function(self) return 0 end, bottom = function(self) return 0 end}
 		local function new_text(name)
 			local text = info_panel:text({
@@ -141,6 +146,11 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 	end
 	
 	function obj:update(fpcp_base)
+		local info_panel = self.ws_panel:child("info_panel")
+		if not info_panel:visible() then
+			return
+		end
+
 		local cam = managers.viewport:get_current_camera()
 		if not cam then
 			return
@@ -164,13 +174,13 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		mvector3.multiply(temp, offset.z)
 		mvector3.add(vec, temp)
 		mvector3.direction(temp, cam:position(), vec)
-		local in_fov = mvector3.angle(cam:rotation():y(), temp) < 90 and 1 or 0
-		local pos = self.ws:world_to_screen(cam, vec)
+		local in_fov = mvector3.angle(cam:rotation():y(), temp) < 90
 		local in_steelsight = managers.player:player_unit():movement():current_state()._state_data.in_steelsight
-		local info_panel = self.ws_panel:child("info_panel")
+		local pos = self.ws:world_to_screen(cam, vec)
 		info_panel:set_x(pos.x - (offset.x < 0 and info_panel:w() or 0))
 		info_panel:set_y(pos.y - (offset.z > 0 and info_panel:h() or 0))
-		info_panel:set_alpha(self.visibled * in_fov * (in_steelsight and 0.75 or 1))
+		--info_panel:rotate(90) -- panel cannot rotate, need to be bitmap, perhaps
+		info_panel:set_alpha((in_fov and 1 or 0) * (in_steelsight and 0.75 or 1))
 	end
 	
 	function obj:check_mod_update()
