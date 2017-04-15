@@ -68,6 +68,12 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		end
 	end
 	
+	function obj:safecall(func)
+		if not LuaModManager:IsModEnabled(mod_path) then return end
+		local s, r = pcall(func)
+		if s then return r else WeaponPanel:ErrorHandler() return nil end
+	end
+	
 	function obj:create_panel()
 		self.ws = managers.gui_data:create_fullscreen_workspace()
 		self.ws_panel = self.ws:panel()
