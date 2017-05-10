@@ -51,7 +51,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 			end
 
 			QuickMenu:new(
-				"Mod Error", "Error occured on \"" .. self.mod_dir .. "\".\nThis mod is unloaded automatically.\nSee BLT log for more details.",
+				"Mod Error", "Error occured on \"" .. self.mod_dir .. "\".\nThis mod is unloaded and disabled automatically.\nSee BLT log for more details.",
 				{
 					[1] = {
 						text = "Open logs folder",
@@ -121,10 +121,17 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		info_panel:set_h(prev_text:bottom())
 	end
 
-	function obj:update_panel_info()
-		if not self.ws_panel then
-			self:create_panel()
-		end
+	function obj:set_ammo_amount(index, max_clip, cur_clip, cur_ammo, max_ammo)
+		self._ammo = self._ammo or {}
+		self._ammo[index] = self._ammo[index] or {
+			max_clip = max_clip,
+			cur_clip = cur_clip,
+			cur_ammo = cur_ammo,
+			max_ammo = max_ammo
+		}
+	end
+
+	function obj:update_panel_info(sel)
 		local info_panel = self.ws_panel:child("info_panel")
 
 		local clip_text = info_panel:child("clip_text")
@@ -138,7 +145,10 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 			return
 		end
 		local base = weapon:base()
-		local max_clip, cur_clip, cur_ammo, max_ammo = base:get_ammo_max_per_clip(), base:get_ammo_remaining_in_clip(), base:get_ammo_total(), base:get_ammo_max()
+		--local max_clip, cur_clip, cur_ammo, max_ammo = base:get_ammo_max_per_clip(), base:get_ammo_remaining_in_clip(), base:get_ammo_total(), base:get_ammo_max()
+		local ammo = self._ammo[sel or managers.player:player_unit():inventory():equipped_selection()]
+		local max_clip, cur_clip, cur_ammo, max_ammo = ammo.max_clip, ammo.cur_clip, ammo.cur_ammo, ammo.max_ammo
+
 		if self.options.data.base.realammo then
 			cur_ammo = math.max(0, cur_ammo - cur_clip)
 			max_ammo = math.max(0, max_ammo - max_clip) + (max_clip - cur_clip)
