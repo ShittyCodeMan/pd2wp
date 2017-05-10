@@ -51,7 +51,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 			end
 
 			QuickMenu:new(
-				"Mod Error", "Error occured on \"" .. self.mod_dir .. "\".\nThis mod is unloaded and disabled automatically.\nSee BLT log for more details.",
+				"Mod Error", "Error occured on \"" .. self.mod_dir .. "\".\nThis mod is unloaded automatically.\nSee BLT log for more details.",
 				{
 					[1] = {
 						text = "Open logs folder",
