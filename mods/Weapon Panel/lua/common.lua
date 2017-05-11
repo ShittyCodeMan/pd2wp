@@ -123,7 +123,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 
 	function obj:set_ammo_amount(index, max_clip, cur_clip, cur_ammo, max_ammo)
 		self._ammo = self._ammo or {}
-		self._ammo[index] = self._ammo[index] or {
+		self._ammo[index] = {
 			max_clip = max_clip,
 			cur_clip = cur_clip,
 			cur_ammo = cur_ammo,
