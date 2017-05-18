@@ -27,6 +27,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 			default = {
 				base = {
 					realammo = false,
+					rotate = true,
 					alpha = 0.5,
 					offset = {
 						x = -3,
@@ -204,19 +205,21 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		info_panel:set_y(pos.y)
 		info_panel:set_alpha((in_fov and 1 or 0) * (in_steelsight and 0.75 or 1))
 
-		local clip_text = info_panel:child("clip_text")
-		local clip_text_bg = info_panel:child("clip_text_bg")
-		local clip_text_bg2 = info_panel:child("clip_text_bg2")
-		local ammo_text = info_panel:child("ammo_text")
-		local ammo_text_bg = info_panel:child("ammo_text_bg")
-		local ammo_text_bg2 = info_panel:child("ammo_text_bg2")
-		local d = rot:roll()
-		clip_text:set_rotation(d)
-		clip_text_bg:set_rotation(d)
-		clip_text_bg2:set_rotation(d)
-		ammo_text:set_rotation(d)
-		ammo_text_bg:set_rotation(d)
-		ammo_text_bg2:set_rotation(d)
+		if self.options.data.base.rotate then
+			local clip_text = info_panel:child("clip_text")
+			local clip_text_bg = info_panel:child("clip_text_bg")
+			local clip_text_bg2 = info_panel:child("clip_text_bg2")
+			local ammo_text = info_panel:child("ammo_text")
+			local ammo_text_bg = info_panel:child("ammo_text_bg")
+			local ammo_text_bg2 = info_panel:child("ammo_text_bg2")
+			local d = rot:roll()
+			clip_text:set_rotation(d)
+			clip_text_bg:set_rotation(d)
+			clip_text_bg2:set_rotation(d)
+			ammo_text:set_rotation(d)
+			ammo_text_bg:set_rotation(d)
+			ammo_text_bg2:set_rotation(d)
+		end
 
 		halign = offset.x > 0
 		valign = offset.z > 0

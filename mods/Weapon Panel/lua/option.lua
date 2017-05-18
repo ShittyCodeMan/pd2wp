@@ -21,7 +21,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		if id then
 			MenuHelper:NewMenu(menu_id)
 			menu.logic._data._nodes[menu_id] = MenuHelper:BuildMenu(menu_id, {area_bg = "half"})
-			
+
 		end
 	end
 	MenuCallbackHandler.WeaponPanelOptions_realammo = function(self, item)
@@ -31,7 +31,20 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		if id then
 			WeaponPanel.options.data[id].realammo = (item:value() == "on" and true or false)
 			WeaponPanel:save_options()
-			
+
+			if WeaponPanel.ws_panel then
+				WeaponPanel:update_panel_info()
+			end
+		end
+	end
+	MenuCallbackHandler.WeaponPanelOptions_rotate = function(self, item)
+		local name = item:parameters().name
+		local menu_id = name .. "_menu"
+		local _, _, id = name:find("^WeaponPanelOptions_(.+)_rotate$")
+		if id then
+			WeaponPanel.options.data[id].rotate = (item:value() == "on" and true or false)
+			WeaponPanel:save_options()
+
 			if WeaponPanel.ws_panel then
 				WeaponPanel:update_panel_info()
 			end
@@ -44,7 +57,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		if id then
 			WeaponPanel.options.data[id].alpha = alpha
 			WeaponPanel:save_options()
-			
+
 			if WeaponPanel.ws_panel then
 				local info_panel = WeaponPanel.ws_panel:child("info_panel")
 				info_panel:child("clip_text_bg"):set_alpha(alpha)
@@ -61,13 +74,13 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		if id and axis then
 			WeaponPanel.options.data[id].offset[axis] = val
 			WeaponPanel:save_options()
-			
+
 			if WeaponPanel.ws_panel and managers.player:local_player() then
 				WeaponPanel:update(managers.player:local_player():camera():camera_unit():base())
 			end
 		end
 	end
-	
+
 	MenuHelper:AddToggle({
 		id = "WeaponPanelOptions_base_realammo",
 		title = "Real ammo",
@@ -78,7 +91,18 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		localized = false,
 		priority = 11,
 	})
-	
+
+	MenuHelper:AddToggle({
+		id = "WeaponPanelOptions_base_rotate",
+		title = "Rotate",
+		desc = "Rotate panel along with weapon's roll. Default: " .. tostring(WeaponPanel.options.default.base.rotate),
+		callback = "WeaponPanelOptions_rotate",
+		menu_id = WeaponPanel.options_menu,
+		value = WeaponPanel.options.data.base.rotate,
+		localized = false,
+		priority = 11,
+	})
+
 	MenuHelper:AddSlider({
 		id = "WeaponPanelOptions_base_alpha",
 		title = "Panel opacity",
@@ -93,7 +117,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		localized = false,
 		priority = 10,
 	})
-	
+
 	for _, v in ipairs({
 		[1] = {
 			axis = "x",
@@ -126,7 +150,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 			priority = v.priority,
 		})
 	end
-	
+
 	--[[
 	local function AddWeaponOption(id)
 		MenuHelper:AddButton({
@@ -149,7 +173,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 			localized = false,
 			priority = 10,
 		})
-		
+
 		for _, v in ipairs({
 			[1] = {
 				axis = "x",
