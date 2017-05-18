@@ -205,82 +205,77 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		info_panel:set_y(pos.y)
 		info_panel:set_alpha((in_fov and 1 or 0) * (in_steelsight and 0.75 or 1))
 
+		local d
+		if self.options.data.base.rotate then
+			d = rot:roll()
+		else
+			d = 0
+		end
+
 		local clip_text = info_panel:child("clip_text")
 		local clip_text_bg = info_panel:child("clip_text_bg")
 		local clip_text_bg2 = info_panel:child("clip_text_bg2")
 		local ammo_text = info_panel:child("ammo_text")
 		local ammo_text_bg = info_panel:child("ammo_text_bg")
 		local ammo_text_bg2 = info_panel:child("ammo_text_bg2")
+		clip_text:set_rotation(d)
+		clip_text_bg:set_rotation(d)
+		clip_text_bg2:set_rotation(d)
+		ammo_text:set_rotation(d)
+		ammo_text_bg:set_rotation(d)
+		ammo_text_bg2:set_rotation(d)
 
-		if self.options.data.base.rotate then
-			local d = rot:roll()
-			clip_text:set_rotation(d)
-			clip_text_bg:set_rotation(d)
-			clip_text_bg2:set_rotation(d)
-			ammo_text:set_rotation(d)
-			ammo_text_bg:set_rotation(d)
-			ammo_text_bg2:set_rotation(d)
+		halign = offset.x > 0
+		valign = offset.z > 0
 
-			halign = offset.x > 0
-			valign = offset.z > 0
+		local x, y
+		x = halign
+			and (clip_text:w() / 2)
+			or (-clip_text:w() / 2)
+		y = valign
+			and (-ammo_text:h() - clip_text:h() / 2)
+			or (clip_text:h() / 2)
+		clip_text:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
 
-			local x, y
-			x = halign
-				and (clip_text:w() / 2)
-				or (-clip_text:w() / 2)
-			y = valign
-				and (-ammo_text:h() - clip_text:h() / 2)
-				or (clip_text:h() / 2)
-			clip_text:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
+		x = halign
+			and (clip_text_bg:w() / 2)
+			or (-clip_text_bg2:w() - clip_text_bg:w() / 2)
+		y = valign
+			and (-ammo_text_bg:h() - clip_text_bg:h() / 2)
+			or (clip_text_bg:h() / 2)
+		clip_text_bg:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
 
-			x = halign
-				and (clip_text_bg:w() / 2)
-				or (-clip_text_bg2:w() - clip_text_bg:w() / 2)
-			y = valign
-				and (-ammo_text_bg:h() - clip_text_bg:h() / 2)
-				or (clip_text_bg:h() / 2)
-			clip_text_bg:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
+		x = halign
+			and (clip_text_bg:w() + clip_text_bg2:w() / 2)
+			or (-clip_text_bg2:w() / 2)
+		y = valign
+			and (-ammo_text_bg2:h() - clip_text_bg2:h() / 2)
+			or (clip_text_bg2:h() / 2)
+		clip_text_bg2:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
 
-			x = halign
-				and (clip_text_bg:w() + clip_text_bg2:w() / 2)
-				or (-clip_text_bg2:w() / 2)
-			y = valign
-				and (-ammo_text_bg2:h() - clip_text_bg2:h() / 2)
-				or (clip_text_bg2:h() / 2)
-			clip_text_bg2:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
+		x = halign
+			and (ammo_text:w() / 2)
+			or (-ammo_text:w() / 2)
+		y = valign
+			and (-ammo_text:h() / 2)
+			or (clip_text:h() + ammo_text:h() / 2)
+		ammo_text:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
 
-			x = halign
-				and (ammo_text:w() / 2)
-				or (-ammo_text:w() / 2)
-			y = valign
-				and (-ammo_text:h() / 2)
-				or (clip_text:h() + ammo_text:h() / 2)
-			ammo_text:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
+		x = halign
+			and (ammo_text_bg:w() / 2)
+			or (-ammo_text_bg2:w() - ammo_text_bg:w() / 2)
+		y = valign
+			and (-ammo_text_bg:h() / 2)
+			or (clip_text_bg:h() + ammo_text_bg:h() / 2)
+		ammo_text_bg:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
 
-			x = halign
-				and (ammo_text_bg:w() / 2)
-				or (-ammo_text_bg2:w() - ammo_text_bg:w() / 2)
-			y = valign
-				and (-ammo_text_bg:h() / 2)
-				or (clip_text_bg:h() + ammo_text_bg:h() / 2)
-			ammo_text_bg:set_center(x * math.cos(d) - y * math.sin(d), x * math.sin(d) + y * math.cos(d))
-
-			x = halign
-				and (ammo_text_bg:w() + ammo_text_bg2:w() / 2)
-				or (-ammo_text_bg2:w() / 2)
-			y = valign
-			and (-ammo_text_bg2:h()/2)
-			or (clip_text_bg2:h()+ammo_text_bg2:h()/2)
-			ammo_text_bg2:set_center(x * math.cos(d) - y*math.sin(d), x * math.sin(d) + y*math.cos(d))
-		else
-			local d = 0
-			clip_text:set_rotation(d)
-			clip_text_bg:set_rotation(d)
-			clip_text_bg2:set_rotation(d)
-			ammo_text:set_rotation(d)
-			ammo_text_bg:set_rotation(d)
-			ammo_text_bg2:set_rotation(d)
-		end
+		x = halign
+			and (ammo_text_bg:w() + ammo_text_bg2:w() / 2)
+			or (-ammo_text_bg2:w() / 2)
+		y = valign
+		and (-ammo_text_bg2:h()/2)
+		or (clip_text_bg2:h()+ammo_text_bg2:h()/2)
+		ammo_text_bg2:set_center(x * math.cos(d) - y*math.sin(d), x * math.sin(d) + y*math.cos(d))
 	end
 
 	function obj:check_mod_update()
