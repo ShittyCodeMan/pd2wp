@@ -211,7 +211,6 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		else
 			d = 0.125 -- dont set to 0
 		end
-		log(d)
 		local clip_text = info_panel:child("clip_text")
 		local clip_text_bg = info_panel:child("clip_text_bg")
 		local clip_text_bg2 = info_panel:child("clip_text_bg2")
