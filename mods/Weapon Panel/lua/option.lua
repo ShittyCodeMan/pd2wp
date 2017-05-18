@@ -212,6 +212,6 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 end)
 
 Hooks:Add("MenuManagerBuildCustomMenus", "WeaponPanelOptions", function(menu_manager, nodes)
-	nodes[WeaponPanel.options_menu] = MenuHelper:BuildMenu(WeaponPanel.options_menu, {area_bg = "none"})
+	nodes[WeaponPanel.options_menu] = MenuHelper:BuildMenu(WeaponPanel.options_menu, {area_bg = "half"})
 	MenuHelper:AddMenuItem(MenuHelper.menus.lua_mod_options_menu, WeaponPanel.options_menu, "WeaponPanel_options_title", "WeaponPanel_options_desc")
 end)

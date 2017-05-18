@@ -206,7 +206,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		info_panel:set_alpha((in_fov and 1 or 0) * (in_steelsight and 0.75 or 1))
 
 		local d
-		if self.options.data.base.rotate then
+		if self.options.data.base.rotation then
 			d = rot:roll()
 		else
 			d = 0.125 -- dont set to 0
