@@ -42,11 +42,11 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 		local menu_id = name .. "_menu"
 		local _, _, id = name:find("^WeaponPanelOptions_(.+)_rotate$")
 		if id then
-			WeaponPanel.options.data[id].rotate = (item:value() == "on" and true or false)
+			WeaponPanel.options.data[id].rotation = (item:value() == "on" and true or false)
 			WeaponPanel:save_options()
 
 			if WeaponPanel.ws_panel then
-				WeaponPanel:update_panel_info()
+				WeaponPanel:update(managers.player:player_unit():camera():camera_unit():base())
 			end
 		end
 	end
@@ -95,10 +95,10 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 	MenuHelper:AddToggle({
 		id = "WeaponPanelOptions_base_rotate",
 		title = "Rotate",
-		desc = "Rotate panel along with weapon's roll. Default: " .. tostring(WeaponPanel.options.default.base.rotate),
+		desc = "Rotate panel along with weapon's roll. Default: " .. tostring(WeaponPanel.options.default.base.rotation),
 		callback = "WeaponPanelOptions_rotate",
 		menu_id = WeaponPanel.options_menu,
-		value = WeaponPanel.options.data.base.rotate,
+		value = WeaponPanel.options.data.base.rotation,
 		localized = false,
 		priority = 11,
 	})
@@ -212,6 +212,6 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "WeaponPanelOptions", function(menu_
 end)
 
 Hooks:Add("MenuManagerBuildCustomMenus", "WeaponPanelOptions", function(menu_manager, nodes)
-	nodes[WeaponPanel.options_menu] = MenuHelper:BuildMenu(WeaponPanel.options_menu, {area_bg = "half"})
+	nodes[WeaponPanel.options_menu] = MenuHelper:BuildMenu(WeaponPanel.options_menu, {area_bg = "none"})
 	MenuHelper:AddMenuItem(MenuHelper.menus.lua_mod_options_menu, WeaponPanel.options_menu, "WeaponPanel_options_title", "WeaponPanel_options_desc")
 end)

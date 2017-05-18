@@ -27,7 +27,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 			default = {
 				base = {
 					realammo = false,
-					rotate = true,
+					rotation = true,
 					alpha = 0.5,
 					offset = {
 						x = -3,
@@ -209,9 +209,9 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		if self.options.data.base.rotate then
 			d = rot:roll()
 		else
-			d = 0
+			d = 0.125 -- dont set to 0
 		end
-
+		log(d)
 		local clip_text = info_panel:child("clip_text")
 		local clip_text_bg = info_panel:child("clip_text_bg")
 		local clip_text_bg2 = info_panel:child("clip_text_bg2")
