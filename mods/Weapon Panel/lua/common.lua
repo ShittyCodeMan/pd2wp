@@ -345,7 +345,9 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 					dst[k] = f( dst[k], v )
 				end
 			else
-				dst = dst or src
+				if dst == nil then
+					dst = src
+				end
 			end
 			return dst
 		end
