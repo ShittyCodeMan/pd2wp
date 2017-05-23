@@ -207,7 +207,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 
 		local d
 		if self.options.data.base.rotation then
-			d = rot:roll()
+			d = rot:roll() - fpcp_base:eye_rotation():roll()
 		else
 			d = 0.125 -- dont set to 0
 		end
