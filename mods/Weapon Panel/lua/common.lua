@@ -41,26 +41,15 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 
 	function obj:ErrorHandler()
 		if LuaModManager:IsModEnabled(self.mod_dir) then
-			log("Disabling " .. self.mod_dir)
-			--LuaModManager:DisableMod(self.mod_dir)
-
-			log("Unloading " .. self.mod_dir)
-			Hooks:RemovePostHook("WeaponPanel")
 
 			if self.ws_panel and self.ws_panel:child("info_panel") then
 				self.ws_panel:child("info_panel"):hide()
 			end
 
 			QuickMenu:new(
-				"Mod Error", "Error occured on \"" .. self.mod_dir .. "\".\nThis mod is unloaded automatically.\nSee BLT log for more details.",
+				"Mod Error", "Error occured on \"" .. self.mod_dir .. "\".",
 				{
 					[1] = {
-						text = "Open logs folder",
-						callback = function()
-							os.execute(string.gsub("start " .. LogsPath, "\/", "\\"))
-						end,
-					},
-					[2] = {
 						text = "OK",
 						is_cancel_button = true,
 					}
@@ -70,7 +59,6 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 	end
 
 	function obj:safecall(func)
-		if not LuaModManager:IsModEnabled(mod_path) then return end
 		local s, r = pcall(func)
 		if s then return r else WeaponPanel:ErrorHandler() return nil end
 	end
@@ -133,6 +121,9 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 	end
 
 	function obj:update_panel_info(sel)
+		sel = sel or managers.player:player_unit():inventory():equipped_selection()
+		SaveTable(Global.blackmarket_manager.weapons, "Weapons.txt")
+
 		local info_panel = self.ws_panel:child("info_panel")
 
 		local clip_text = info_panel:child("clip_text")
@@ -147,7 +138,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		end
 		local base = weapon:base()
 		--local max_clip, cur_clip, cur_ammo, max_ammo = base:get_ammo_max_per_clip(), base:get_ammo_remaining_in_clip(), base:get_ammo_total(), base:get_ammo_max()
-		local ammo = self._ammo[sel or managers.player:player_unit():inventory():equipped_selection()]
+		local ammo = self._ammo[sel]
 		local max_clip, cur_clip, cur_ammo, max_ammo = ammo.max_clip, ammo.cur_clip, ammo.cur_ammo, ammo.max_ammo
 
 		if self.options.data.base.realammo then
@@ -173,12 +164,18 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 			return
 		end
 
+		sel = managers.player:player_unit():inventory():equipped_selection()
+		--log(managers.blackmarket:equipped_item(sel == 1 and "secondaries" or "primaries").factory_id)
+		--Global.blackmarket_manager.weapons
+
 		local cam = managers.viewport:get_current_camera()
 		if not cam then
 			return
 		end
 		local equipped_unit = fpcp_base._parent_unit:inventory():equipped_unit()
-		local obj = equipped_unit:get_object(Idstring("fire")) or equipped_unit:get_object(Idstring("a_sight")) or fpcp_base._unit:get_object(Idstring("a_weapon_right"))
+		local obj = equipped_unit:get_object(Idstring("fire"))
+						 or equipped_unit:get_object(Idstring("a_sight"))
+						 or fpcp_base._unit:get_object(Idstring("a_weapon_right"))
 		if not obj then
 			return
 		end
@@ -209,7 +206,7 @@ _G.WeaponPanel = _G.WeaponPanel or (function()
 		if self.options.data.base.rotation then
 			d = rot:roll() - fpcp_base:eye_rotation():roll()
 		else
-			d = 0.125 -- dont set to 0
+			d = 8^-9 -- dont set to 0
 		end
 		local clip_text = info_panel:child("clip_text")
 		local clip_text_bg = info_panel:child("clip_text_bg")
